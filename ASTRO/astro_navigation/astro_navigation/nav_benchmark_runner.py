@@ -3,6 +3,7 @@ import csv
 import json
 import math
 import time
+import os
 from pathlib import Path
 
 import rclpy
@@ -13,6 +14,43 @@ from geometry_msgs.msg import PoseStamped
 from nav2_msgs.action import ComputePathToPose, NavigateToPose
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import LaserScan
+
+
+def get_metrics_dir(metrics_subdir: str) -> Path:
+    env_root = os.environ.get("WORKSPACE_ROOT")
+    if env_root:
+        return Path(env_root).expanduser().resolve() / "metrics" / metrics_subdir
+
+    candidates = []
+
+    for var in ("COLCON_PREFIX_PATH", "AMENT_PREFIX_PATH"):
+        for entry in os.environ.get(var, "").split(":"):
+            if not entry:
+                continue
+            p = Path(entry).expanduser().resolve()
+            candidates.append(p.parent if p.name == "install" else p)
+
+    cwd = Path.cwd().resolve()
+    here = Path(__file__).resolve()
+
+    candidates.extend([cwd, *cwd.parents, here.parent, *here.parents])
+
+    seen = set()
+    for candidate in candidates:
+        candidate = candidate.resolve()
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+
+        metrics_root = candidate / "metrics"
+        if metrics_root.exists():
+            return metrics_root / metrics_subdir
+
+    raise RuntimeError(
+        f"Ne mogu pronaći workspace root za metrics/{metrics_subdir}. "
+        "Postavi WORKSPACE_ROOT, npr. "
+        "'export WORKSPACE_ROOT=/home/$USER/<ime_workspacea>'"
+    )
 
 
 def quat_to_yaw(x, y, z, w):
@@ -49,7 +87,7 @@ class NavBenchmarkRunner(Node):
 
         self.declare_parameter(
             "output_dir",
-            str(Path.home() / "pas_seminar" / "metrics" / "metrics_sim")
+            str(get_metrics_dir("metrics_sim"))
         )
         self.declare_parameter("run_name", "run01")
         self.declare_parameter("planner_id", "GridBased")

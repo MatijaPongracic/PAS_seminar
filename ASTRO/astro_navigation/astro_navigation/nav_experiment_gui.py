@@ -14,6 +14,43 @@ from rclpy.node import Node
 from std_srvs.srv import Empty
 
 
+def get_metrics_dir(metrics_subdir: str) -> Path:
+    env_root = os.environ.get("WORKSPACE_ROOT")
+    if env_root:
+        return Path(env_root).expanduser().resolve() / "metrics" / metrics_subdir
+
+    candidates = []
+
+    for var in ("COLCON_PREFIX_PATH", "AMENT_PREFIX_PATH"):
+        for entry in os.environ.get(var, "").split(":"):
+            if not entry:
+                continue
+            p = Path(entry).expanduser().resolve()
+            candidates.append(p.parent if p.name == "install" else p)
+
+    cwd = Path.cwd().resolve()
+    here = Path(__file__).resolve()
+
+    candidates.extend([cwd, *cwd.parents, here.parent, *here.parents])
+
+    seen = set()
+    for candidate in candidates:
+        candidate = candidate.resolve()
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+
+        metrics_root = candidate / "metrics"
+        if metrics_root.exists():
+            return metrics_root / metrics_subdir
+
+    raise RuntimeError(
+        f"Ne mogu pronaći workspace root za metrics/{metrics_subdir}. "
+        "Postavi WORKSPACE_ROOT, npr. "
+        "'export WORKSPACE_ROOT=/home/$USER/<ime_workspacea>'"
+    )
+
+
 class NavExperimentGui(Node):
     def __init__(self):
         super().__init__('nav_experiment_gui')
@@ -33,7 +70,7 @@ class NavExperimentGui(Node):
             self.reset_positions_service
         )
 
-        self.metrics_dir = Path('/home/matija-pongracic/pas_seminar/metrics/metrics_sim')
+        self.metrics_dir = get_metrics_dir("metrics_sim")
         self.scenario = 'crta_mapa'
         self.goal_x = 7.84887
         self.goal_y = 38.8461
@@ -389,8 +426,8 @@ class NavExperimentGui(Node):
         msg.header.frame_id = 'map'
         msg.header.stamp = self.get_clock().now().to_msg()
 
-        msg.pose.pose.position.x = 8.441
-        msg.pose.pose.position.y = 28.987
+        msg.pose.pose.position.x = 8.741
+        msg.pose.pose.position.y = 29.287
         msg.pose.pose.position.z = 0.0
 
         msg.pose.pose.orientation.x = 0.0

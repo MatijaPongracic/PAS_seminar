@@ -13,6 +13,43 @@ from geometry_msgs.msg import PoseWithCovarianceStamped
 from rclpy.node import Node
 
 
+def get_metrics_dir(metrics_subdir: str) -> Path:
+    env_root = os.environ.get("WORKSPACE_ROOT")
+    if env_root:
+        return Path(env_root).expanduser().resolve() / "metrics" / metrics_subdir
+
+    candidates = []
+
+    for var in ("COLCON_PREFIX_PATH", "AMENT_PREFIX_PATH"):
+        for entry in os.environ.get(var, "").split(":"):
+            if not entry:
+                continue
+            p = Path(entry).expanduser().resolve()
+            candidates.append(p.parent if p.name == "install" else p)
+
+    cwd = Path.cwd().resolve()
+    here = Path(__file__).resolve()
+
+    candidates.extend([cwd, *cwd.parents, here.parent, *here.parents])
+
+    seen = set()
+    for candidate in candidates:
+        candidate = candidate.resolve()
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+
+        metrics_root = candidate / "metrics"
+        if metrics_root.exists():
+            return metrics_root / metrics_subdir
+
+    raise RuntimeError(
+        f"Ne mogu pronaći workspace root za metrics/{metrics_subdir}. "
+        "Postavi WORKSPACE_ROOT, npr. "
+        "'export WORKSPACE_ROOT=/home/$USER/<ime_workspacea>'"
+    )
+
+
 class NavExperimentGui(Node):
     def __init__(self):
         super().__init__('nav_experiment_gui')
@@ -29,7 +66,7 @@ class NavExperimentGui(Node):
 
         self.reset_positions_client = None
 
-        self.metrics_dir = Path('/home/matija-pongracic/pas_seminar/metrics/metrics_robot')
+        self.metrics_dir = get_metrics_dir("metrics_robot")
         self.scenario = 'crta_mapa'
         self.goal_x = 7.84887
         self.goal_y = 38.8461

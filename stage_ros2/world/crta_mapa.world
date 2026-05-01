@@ -36,7 +36,7 @@ floorplan
 astro_robot
 (
   name "robot_0"
-  pose [ 6.0 13.333 0 45 ]
+  pose [ 6.3 13.633 0 45 ]
   color "grey"
 )
 
