@@ -426,14 +426,14 @@ class NavExperimentGui(Node):
         msg.header.frame_id = 'map'
         msg.header.stamp = self.get_clock().now().to_msg()
 
-        msg.pose.pose.position.x = 8.741
-        msg.pose.pose.position.y = 29.287
+        msg.pose.pose.position.x = 8.641
+        msg.pose.pose.position.y = 29.187
         msg.pose.pose.position.z = 0.0
 
         msg.pose.pose.orientation.x = 0.0
         msg.pose.pose.orientation.y = 0.0
         msg.pose.pose.orientation.z = 0.378338
-        msg.pose.pose.orientation.w = 0.925668
+        msg.pose.pose.orientation.w = -0.925668
 
         msg.pose.covariance = [
             0.25, 0.0, 0.0, 0.0, 0.0, 0.0,

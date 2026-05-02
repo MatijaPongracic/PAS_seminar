@@ -182,9 +182,9 @@ controller_server:
       CostCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 3.81
-        critical_cost: 300.0
-        collision_cost: 1000000.0
+        cost_weight: 1.0
+        critical_cost: 100.0
+        collision_cost: 100000.0
         consider_footprint: false
         near_goal_distance: 0.5
         trajectory_point_step: 2
@@ -220,7 +220,7 @@ controller_server:
       PathFollowCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 5.0
+        cost_weight: 6.0
         threshold_to_consider: 1.4
         offset_from_furthest: 6
 
@@ -229,8 +229,8 @@ controller_server:
         cost_power: 1
         cost_weight: 2.2
         threshold_to_consider: 0.5
-        offset_from_furthest: 20
-        max_angle_to_furthest: 0.785398
+        offset_from_furthest: 5
+        max_angle_to_furthest: 1.0
         mode: 0
 
 local_costmap:
