@@ -42,7 +42,7 @@ git clone https://github.com/MatijaPongracic/PAS_seminar.git
 ```
 
 ### Building the project and setting up the environment
-Return to the root directory of the workspace, install dependencies, build the workspace, and source the setup file.
+Return to the root directory of the workspace, install dependencies, build the workspace and source the setup file.
 ```bash
 cd ~/pas_ws/
 rosdep install --from-paths src -y --ignore-src
@@ -90,17 +90,17 @@ ros2 run astro_navigation robot_nav_experiment_gui.py
 ```
 
 Use the radio buttons to select the desired planner and controller combination, then press the ENTER button in the GUI.
-Then, in RViz, use the 2D Pose Estimate tool to define the robot's initial pose approximately, but as accurately as possible, so that it matches the pose in the Stage simulator.
+Then, in RViz, use the 2D Pose Estimate tool to define the robot's initial pose approximately, but as accurately as possible, so that it matches the pose of the real one.
 By selecting 2D Goal Pose in RViz, the robot's goal pose is defined, and if the planner and controller are properly activated, the robot will start navigating.
 
 ## (3) Conducting the experiment
-By default, the experiment is conducted in the Laboratory for Computational Intelligence, where the robot's initial and goal poses are predefined.
+By default, the experiment is set to be conducted in the Laboratory for Artificial Intelligence (L2), where the robot's initial and goal poses are predefined.
 
-It is necessary to start the system (simulation or real robot) and the GUI, select the desired planner and controller, and press the RESET button. This will assign the initial pose to the robot, which will be visible in RViz. In simulation, this will also place the robot in the equivalent pose in Stage, while when working with the real robot, the robot must be manually placed in the same pose.
+Start the system (simulation or real robot) and the GUI, select the desired planner and controller and press the RESET button. This will assign the initial pose to the robot, which will be visible in RViz. In simulation, this will also place the robot in the equivalent pose in Stage, while in case of working with the real robot, it shall be manually placed in the same pose.
 
-If the robot's initial pose is set correctly, pressing the START button starts the experiment, and the results are saved in the appropriate folder - `metrics_sim` or `metrics_robot`.
+If the robot's initial pose is set correctly, pressing the START button starts the experiment and the results are saved in the appropriate folder - `metrics_sim` or `metrics_robot`.
 
-After the experiment has been carried out the desired number of times with each planner and controller combination, it is necessary to run the metrics analysis node based on the raw odometry data recorded during the experiment.
+After the experiment has been carried out the desired number of times with each planner and controller combination, run the metrics analysis node to compute performance metrics based on the raw odometry data recorded during the experiments.
 
 ```bash
 ros2 run astro_navigation nav_metrics_analyzer.py --input_dir ~/pas_ws/metrics/metrics_sim/
