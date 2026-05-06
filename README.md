@@ -100,6 +100,8 @@ Start the system (simulation or real robot) and the GUI, select the desired plan
 
 If the robot's initial pose is set correctly, pressing the START button starts the experiment and the results are saved in the appropriate folder - `metrics_sim` or `metrics_robot`.
 
+## (4) Results analysis
+### Custom evaluation
 After the experiment has been carried out the desired number of times with each planner and controller combination, run the metrics analysis node to compute performance metrics based on the raw odometry data recorded during the experiments.
 
 ```bash
@@ -108,6 +110,24 @@ ros2 run astro_navigation nav_metrics_analyzer.py --input_dir ~/pas_ws/metrics/m
 or
 ```bash
 ros2 run astro_navigation nav_metrics_analyzer.py --input_dir ~/pas_ws/metrics/metrics_robot/
+```
+
+This will create `csv` files in the folder, which can later be used for performance analysis.
+
+### Evaluation with `evo` tool
+Make sure you have installed `evo`. This can be done from PyPI:
+
+```bash
+python3 -m pip install --user --upgrade evo
+```
+
+Run the evo-analysis node:
+```bash
+ros2 run astro_navigation evo_analyzer.py --input_dir ~/pas_ws/metrics/metrics_sim/
+```
+or
+```bash
+ros2 run astro_navigation evo_analyzer.py --input_dir ~/pas_ws/metrics/metrics_robot/
 ```
 
 This will create `csv` files in the folder, which can later be used for performance analysis.

@@ -30,6 +30,7 @@ INSTALL(PROGRAMS
   astro_navigation/nav_experiment_gui.py
   astro_navigation/robot_nav_benchmark_runner.py
   astro_navigation/robot_nav_experiment_gui.py
+  astro_navigation/evo_analyzer.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
